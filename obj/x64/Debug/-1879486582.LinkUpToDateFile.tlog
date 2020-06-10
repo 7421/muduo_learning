@@ -1,0 +1,1 @@
+g++ -o "/home/book/projects/ConsoleApplication1/bin/x64/Debug/ConsoleApplication1.out" -Wl,--no-undefined -Wl,-L"/home/book/projects/ConsoleApplication1/(RemoteRootDir)/bin/(Platform)/Debug" -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack /home/book/projects/ConsoleApplication1/obj/x64/Debug/main.o -lpthread

@@ -1,0 +1,5 @@
+﻿  正在验证源
+  正在将源远程复制到“39.106.5.39”
+  正在验证体系结构
+  正在验证体系结构
+D:\SoftWare\Visual Studio\MSBuild\Microsoft\VC\v160\Application Type\Linux\1.0\Linux.targets(174,5): error : 当前项目体系结构“x86”不兼容远程系统体系结构“x64”(“x64”)。请在配置管理器中将项目体系结构切换为“x64”。
