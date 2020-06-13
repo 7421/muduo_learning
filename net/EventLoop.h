@@ -13,7 +13,7 @@
 namespace muduo
 {
 
-class Poller;
+class EPoller;
 class Channel;
 class TimerQueue;
 
@@ -82,7 +82,7 @@ private:
 	bool callingPendingFunctors_;
 	const std::thread::id		threadId_; //loop所处的线程ID
 	Timestamp					pollReturnTime_;//poll轮询返回的时间
-	std::unique_ptr<Poller>     poller_;    //EventLoop管理的poller_l轮询器 
+	std::unique_ptr<EPoller>     poller_;    //EventLoop管理的poller_l轮询器 
 	std::unique_ptr<TimerQueue>	timerQueue_;//EventLoop管理的定时队列
 	int wakeupFd_;							//用于唤醒IO线程	
 									

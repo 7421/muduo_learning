@@ -82,6 +82,7 @@
     <ClCompile Include="net\Buffer.cpp" />
     <ClCompile Include="net\Channel.cpp" />
     <ClCompile Include="net\Connector.cpp" />
+    <ClCompile Include="net\EPoller.cpp" />
     <ClCompile Include="net\EventLoop.cpp" />
     <ClCompile Include="net\EventLoopThread.cpp" />
     <ClCompile Include="net\EventLoopThreadPool.cpp" />
@@ -103,6 +104,7 @@
     <ClInclude Include="net\Callbacks.h" />
     <ClInclude Include="net\Channel.h" />
     <ClInclude Include="net\Connector.h" />
+    <ClInclude Include="net\EPoller.h" />
     <ClInclude Include="net\EventLoop.h" />
     <ClInclude Include="net\EventLoopThread.h" />
     <ClInclude Include="net\EventLoopThreadPool.h" />

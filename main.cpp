@@ -1,54 +1,30 @@
 #include <iostream>
+#include <thread>
 #include <unistd.h>
 #include <functional>
 
 #include "./net/EventLoop.h"
-#include "./net/InetAddress.h"
-#include "./net/TcpServer.h"
-#include "./net/Buffer.h"
-#include "./net/Connector.h"
-#include "./net/TcpClient.h"
+#include "./net/EventLoopThread.h"
 
-#include "./base/Timestamp.h"
+muduo::EventLoop* g_loop;
+int g_flag = 0;
 
-
-std::string message = "Hello\n";
-
-void onConnection(const muduo::TcpConnectionPtr& conn)
+void print(const char* msg)
 {
-    if (conn->connected())
-    {
-        std::cout << "onConnection(): new connection " << conn->name().c_str()
-            << " from " << conn->peerAddress().toHostPort().c_str() << std::endl;
-        conn->send(message);
-    }
-    else
-    {
-        std::cout << "onConnection(): connection " << conn->name().c_str()
-            << "is down\n";
-    }
+    std::cout << msg << "  pid =  "
+        << getpid() << ", tid = "
+        << std::this_thread::get_id() << std::endl;
 }
 
-
-void onMessage(const muduo::TcpConnectionPtr& conn,
-    muduo::Buffer* buf,
-    Timestamp receiveTime)
+int main()
 {
-    std::cout << "onMessage(): received " << buf->readableBytes()
-        << "bytes from connection " << conn->name().c_str()
-        << " at " << receiveTime.toFormattedString().c_str() << std::endl;
-    std::cout << "onMessage() : [ " << buf->retrieveAsString().c_str() << " ]\n";
-}
-
-int main(int argc, char* argv[])
-{
-    muduo::EventLoop loop;
-    muduo::InetAddress serverAddr("127.0.0.1", 5001);
-    muduo::TcpClient client(&loop, serverAddr);
-
-    client.setConnectionCallback(onConnection);
-    client.setMessageCallback(onMessage);
-    client.enableRetry();
-    client.connect();
-    loop.loop();
+    print("main()");
+    muduo::EventLoopThread loopThread;
+    muduo::EventLoop* loop = loopThread.startLoop();
+    loop->runInLoop(std::bind(print, "runInThread: "));
+    sleep(1);
+    loop->runAfter(2, std::bind(print, "runInThread: "));
+    sleep(3);
+    loop->quit();
+    getchar();
 }

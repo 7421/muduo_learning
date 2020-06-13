@@ -10,6 +10,7 @@ E:\Code\Linux\MyProject\net|/root/projects/ConsoleApplication1/net
 E:\Code\Linux\MyProject\net\Buffer.cpp|/root/projects/ConsoleApplication1/net/Buffer.cpp
 E:\Code\Linux\MyProject\net\Channel.cpp|/root/projects/ConsoleApplication1/net/Channel.cpp
 E:\Code\Linux\MyProject\net\Connector.cpp|/root/projects/ConsoleApplication1/net/Connector.cpp
+E:\Code\Linux\MyProject\net\EPoller.cpp|/root/projects/ConsoleApplication1/net/EPoller.cpp
 E:\Code\Linux\MyProject\net\EventLoop.cpp|/root/projects/ConsoleApplication1/net/EventLoop.cpp
 E:\Code\Linux\MyProject\net\EventLoopThread.cpp|/root/projects/ConsoleApplication1/net/EventLoopThread.cpp
 E:\Code\Linux\MyProject\net\EventLoopThreadPool.cpp|/root/projects/ConsoleApplication1/net/EventLoopThreadPool.cpp
@@ -29,6 +30,7 @@ E:\Code\Linux\MyProject\net\Buffer.h|/root/projects/ConsoleApplication1/net/Buff
 E:\Code\Linux\MyProject\net\Callbacks.h|/root/projects/ConsoleApplication1/net/Callbacks.h
 E:\Code\Linux\MyProject\net\Channel.h|/root/projects/ConsoleApplication1/net/Channel.h
 E:\Code\Linux\MyProject\net\Connector.h|/root/projects/ConsoleApplication1/net/Connector.h
+E:\Code\Linux\MyProject\net\EPoller.h|/root/projects/ConsoleApplication1/net/EPoller.h
 E:\Code\Linux\MyProject\net\EventLoop.h|/root/projects/ConsoleApplication1/net/EventLoop.h
 E:\Code\Linux\MyProject\net\EventLoopThread.h|/root/projects/ConsoleApplication1/net/EventLoopThread.h
 E:\Code\Linux\MyProject\net\EventLoopThreadPool.h|/root/projects/ConsoleApplication1/net/EventLoopThreadPool.h

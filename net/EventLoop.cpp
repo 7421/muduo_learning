@@ -3,7 +3,7 @@
 
 #include "EventLoop.h"
 #include "Channel.h"
-#include "Poller.h"
+#include "EPoller.h"
 #include "TimerQueue.h"
 
 
@@ -50,7 +50,7 @@ EventLoop::EventLoop()
 	  quit_(false),								//用于终止EventLoop 的while循环
 	  callingPendingFunctors_(false),			//正在执行其他用户的回调标识
 	  threadId_(std::this_thread::get_id()),	//EventLoop 所处的线程ID，用于判断是否发生跨线程调用
-	  poller_(new Poller(this)),				//EventLoop 拥有的轮询器
+	  poller_(new EPoller(this)),				//EventLoop 拥有的轮询器
 	  timerQueue_(new TimerQueue(this)),		//EventLoop 拥有的定时器队列
 	  wakeupFd_(createEventfd()),				//创建用于wakeup的事件描述符
 	  wakeupChannel_(new Channel(this, wakeupFd_)) //创建channel，根据发生的事件调用不同的函数
