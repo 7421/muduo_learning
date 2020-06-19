@@ -1,12 +1,12 @@
 #include "TimerQueue.h"
 
-#include <iostream>
 #include <functional>
 #include <algorithm>
 
 #include "EventLoop.h"
 #include "Timer.h"
 #include "TimerId.h"
+#include "../base/AsyncLog.h"
 
 #include <unistd.h>
 #include <sys/timerfd.h>
@@ -29,8 +29,7 @@ int createTimerfd()
 	
 	if (timerfd < 0)
 	{
-		std::cerr << "Failed in timerfd_create" << std::endl;
-		abort();
+		LOGE(" Failed in timerfd_create ");
 	}
 	return timerfd;
 }
@@ -62,11 +61,10 @@ void readTimerfd(int timerfd, Timestamp now)
 	//（通过使用fcntl（2），则调用将失败并显示错误EAGAIN ）。
 	// F_SETFL操作来设置O_NONBLOCK标志）。
 	ssize_t  n = ::read(timerfd, &howmany, sizeof howmany);
-	std::cout << "TimerQueue::handleRead()" << howmany << " at " << now.toString() << std::endl;
+	LOGI(" TimerQueue::handleRead() %d at %s", howmany, now.toString().c_str());
 	if (n != sizeof howmany)
 	{
-		std::cerr << "TimerQueue::handleRead() reads " << n << " bytes instead of 8" << std::endl;
-		abort();
+		LOGE(" TimerQueue::handleRead() reads %d bytes instead of 8",n);
 	}
 }
 
@@ -83,8 +81,7 @@ void resetTimerfd(int timerfd, Timestamp expiration)
 	int ret = ::timerfd_settime(timerfd, 0, &newValue, &oldValue);
 	if (ret)
 	{
-		std::cerr << "timerfd_settime()" << std::endl;
-		abort();
+		LOGE(" timerfd_settime() ");
 	}
 }
 }

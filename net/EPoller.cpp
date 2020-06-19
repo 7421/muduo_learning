@@ -2,7 +2,7 @@
 
 
 
-#include <iostream>
+#include "../base/AsyncLog.h"
 
 #include <assert.h> 
 #include <errno.h>
@@ -30,8 +30,7 @@ EPoller::EPoller(EventLoop* loop)
 {
 	if (epollfd_ < 0)
 	{
-		std::cerr << "Epoller::Epoller" << std::endl;
-		abort();
+		LOGE("Epoller::Epoller");
 	}
 }
 
@@ -47,7 +46,7 @@ Timestamp EPoller::poll(int timeoutMs, ChannelList* activeChannels)
 
 	if (numEvents > 0)
 	{
-		std::cout << numEvents << " events happended" << std::endl;
+		LOGI("%d events happended ", numEvents);
 		fillActiveChannels(numEvents, activeChannels);
 		if (static_cast<size_t>(numEvents) == events_.size())
 		{
@@ -56,12 +55,11 @@ Timestamp EPoller::poll(int timeoutMs, ChannelList* activeChannels)
 	}
 	else if (numEvents == 0)
 	{
-		std::cout << " nothing happended " << std::endl;
+		LOGI(" nothing happended ");
 	}
 	else
 	{
-		std::cout << "EPoller::poll()" << std::endl;
-		abort();
+		LOGE(" EPoller::poll() ");
 	}
 	return now;
 }
@@ -85,7 +83,7 @@ void EPoller::fillActiveChannels(int numEvents, ChannelList* activeChannels) con
 void EPoller::updateChannel(Channel* channel)
 {
 	assertInLoopThread();
-	std::cout << "fd = " << channel->fd() << " events = " << channel->events() << std::endl;   
+	LOGI("fd = %d events = %d ",channel->fd(),channel->events());
 	const int index = channel->index();
 
 	if (index == kNew || index == kDeleted)
@@ -128,7 +126,7 @@ void EPoller::removeChannel(Channel* channel)
 {
 	assertInLoopThread();
 	int fd = channel->fd();
-	std::cout << " fd = " << fd;
+	LOGI(" fd = %d", fd);
 	assert(channels_.find(fd) != channels_.end());
 	assert(channels_[fd] == channel);
 	assert(channel->isNoneEvent());
@@ -158,11 +156,11 @@ void EPoller::update(int operation, Channel* channel)
 	{
 		if (operation == EPOLL_CTL_DEL)
 		{
-			std::cerr << "epoll_ctl op=" << operation << " fd=" << fd << std::endl;
+			LOGE(" epoll_ctl op = %d fd = ", operation, fd);
 		}
 		else
 		{
-			std::cerr << "epoll_ctl op=" << operation << " fd=" << fd << std::endl;
+			LOGE(" epoll_ctl op = %d fd = ", operation, fd);
 		}
 		abort();
 	}

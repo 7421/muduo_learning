@@ -29,7 +29,7 @@ public:
 		return connection_;
 	}
 
-	bool retry() const;
+	bool retry() const { return retry_; };
 	void enableRetry() { retry_ = true; }
 
 	/// Set connection callback.

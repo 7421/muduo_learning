@@ -1,7 +1,7 @@
 #include "TcpServer.h"
 
-#include <iostream>
 #include <functional>
+#include <sstream>
 
 #include <stdio.h>
 #include <assert.h>
@@ -11,6 +11,8 @@
 #include "SocketsOps.h"
 #include "TcpConnection.h"
 #include "EventLoopThreadPool.h"
+#include "../base/AsyncLog.h"
+
 
 using namespace muduo;
 
@@ -63,9 +65,11 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
 	std::string connName = name_ + buf; //connName : 0.0.0.0:5001#1
 	//TcpServer::newConnection [0.0.0.0:5001] - new connection [0.0.0.0:5001#1]
 	//from 124.115.222.150:4147
-	std::cout << "TcpServer::newConnection [" << name_
+	std::ostringstream os;
+	os << "TcpServer::newConnection [" << name_
 			  << "] - new connection [" << connName
 		      << "] from " << peerAddr.toHostPort() << std::endl;
+	LOGI(" %s ", os.str().c_str());
 	InetAddress  localAddr(sockets::getLocalAddr(sockfd));
 
 	EventLoop* ioLoop = threadPool_->getNextLoop();
@@ -90,8 +94,7 @@ void TcpServer::removeConnection(const TcpConnectionPtr& conn)
 void TcpServer::removeConnectionInLoop(const TcpConnectionPtr& conn)
 {
 	loop_->assertInLoopThread();
-	std::cout << "TcpServer::removeConnection [" << name_
-		<< "] - coonection " << conn->name();
+	LOGI(" TcpServer::removeConnection [ %s ] - coonection %s", name_.c_str(), conn->name().c_str());
 	//返回值为1表示删除成功
 	size_t n = connections_.erase(conn->name());
 	assert(n == 1); (void)n;

@@ -1,14 +1,14 @@
 #include "TcpClient.h"
 
+#include <functional>
+
 #include "Connector.h"
 #include "EventLoop.h"
 #include "SocketsOps.h"
 
-#include <iostream>
+#include "../base/AsyncLog.h"
 
-#include <functional>
 
-using namespace std;
 
 namespace muduo
 {
@@ -32,14 +32,12 @@ namespace muduo
 		nextConnId_(1)
 	{
 		connector_->setNewConnectionCallback(std::bind(&TcpClient::newConnection, this, std::placeholders::_1));
-		std::cout << "TcpClient::TcpClien[ " << this
-			<< " ] - connector " << connector_ << std::endl;
+		LOGI( " TcpClient::TcpClien[ %p ] - connector %d", this, connect_);
 	}
 
 	TcpClient::~TcpClient()
 	{
-		std::cout << "TcpClient::~TcpClient[" << this
-			<< "] - connector " << connector_ << std::endl;
+		LOGI(" TcpClient::~TcpClient[ %p ] - connector %d",this, connector_);
 		TcpConnectionPtr conn;
 		{
 			lock_guard<mutex>	lock(mutex_);
@@ -60,8 +58,7 @@ namespace muduo
 
 	void TcpClient::connect()
 	{
-		std::cout << "TcpClient::connect[ " << this << "] - connecting to "
-			<< connector_->serverAddress().toHostPort() << std::endl;
+		LOGI("TcpClient::connect[ %p ] - connecting to  %s", this, connector_->serverAddress().toHostPort().c_str());
 		connect_ = true;
 		connector_->start();
 	}
@@ -129,8 +126,7 @@ namespace muduo
 		loop_->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
 		if (retry_ && connect_)
 		{
-			std::cout << "TcpClient::connect[" << this << "] - Reconnecting to "
-				<< connector_->serverAddress().toHostPort() << std::endl;
+			LOGI(" TcpClient::connect[ %p ] - Reconnecting to %s", this, connector_->serverAddress().toHostPort().c_str());
 			connector_->restart();
 		}
 	}

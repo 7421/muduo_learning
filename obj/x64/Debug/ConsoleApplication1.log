@@ -4,41 +4,6 @@
   正在验证体系结构
   正在启动远程生成
   正在编译源:
-  Timestamp.cpp
   main.cpp
-  Acceptor.cpp
-  Buffer.cpp
-  Channel.cpp
-  Connector.cpp
-  EPoller.cpp
-  EventLoop.cpp
-E:\Code\Linux\MyProject\net\EventLoop.h(81,7): warning : ‘muduo::EventLoop::looping_’ will be initialized after [-Wreorder]
-E:\Code\Linux\MyProject\net\EventLoop.h(81,7): warning :   bool looping_;    //����whileѭ���еı�ʶ
-E:\Code\Linux\MyProject\net\EventLoop.h(81,7): warning :        ^~~~~~~~
-E:\Code\Linux\MyProject\net\EventLoop.h(80,7): warning : ‘bool muduo::EventLoop::quit_’ [-Wreorder]
-E:\Code\Linux\MyProject\net\EventLoop.h(80,7): warning :   bool quit_;     //ֹͣ��־�����������߳�ֹͣwhileѭ��
-E:\Code\Linux\MyProject\net\EventLoop.h(80,7): warning :        ^~~~~
-E:\Code\Linux\MyProject\net\EventLoop.cpp(48,1): warning : when initialized here [-Wreorder]
-  EventLoopThread.cpp
-  EventLoopThreadPool.cpp
-  InetAddress.cpp
-  Poller.cpp
-  SocektsOps.cpp
-E:\Code\Linux\MyProject\net\SocektsOps.cpp(33,6): warning : variable ‘ret’ set but not used [-Wunused-but-set-variable]
-E:\Code\Linux\MyProject\net\SocektsOps.cpp(64,6): warning : unused variable ‘ret’ [-Wunused-variable]
-E:\Code\Linux\MyProject\net\SocektsOps.cpp(75,6): warning : unused variable ‘ret’ [-Wunused-variable]
-E:\Code\Linux\MyProject\net\SocektsOps.cpp(28,6): warning : ‘void {anonymous}::setNonBlockAndCloseOnExec(int)’ defined but not used [-Wunused-function]
-E:\Code\Linux\MyProject\net\SocektsOps.cpp(28,6): warning :  void setNonBlockAndCloseOnExec(int sockfd)
-E:\Code\Linux\MyProject\net\SocektsOps.cpp(28,6): warning :       ^~~~~~~~~~~~~~~~~~~~~~~~~
-  Socket.cpp
-  TcpClient.cpp
-  TcpConnection.cpp
-  TcpServer.cpp
-  Timer.cpp
-  TimerId.h
-E:\Code\Linux\MyProject\net\TimerId.h(1,9): warning : #pragma once in main file
-E:\Code\Linux\MyProject\net\TimerId.h(1,9): warning :  #pragma once
-E:\Code\Linux\MyProject\net\TimerId.h(1,9): warning :          ^~~~
-  TimerQueue.cpp
   正在链接对象
   ConsoleApplication1.vcxproj -> E:\Code\Linux\MyProject\bin\x64\Debug\ConsoleApplication1.out

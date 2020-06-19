@@ -1,7 +1,8 @@
-#include <iostream>
 #include <string>
 
 #include "SocketsOps.h"
+#include "../base/AsyncLog.h"
+
 
 #include <fcntl.h>
 #include <memory.h>
@@ -31,7 +32,7 @@ void setNonBlockAndCloseOnExec(int sockfd)
 	int flags = ::fcntl(sockfd, F_GETFL, 0);
 	flags |= O_NONBLOCK;
 	int ret = ::fcntl(sockfd, F_SETFL, flags);
-	
+	(void)ret;
 	//设置文件描述符标识
 	flags = ::fcntl(sockfd, F_GETFD, 0);
 	flags |= FD_CLOEXEC;
@@ -47,8 +48,7 @@ int sockets::createNonblockingOrDie()
 
 	if (sockfd < 0)
 	{
-		std::cerr << "sockets::createNonblockingOrDie" << std::endl;
-		abort();
+		LOGE(" sockets::createNonblockingOrDie ");
 	}
 	return sockfd;
 }
@@ -62,10 +62,9 @@ int sockets::connect(int sockfd, const struct sockaddr_in& addr)
 void sockets::bindOrDie(int sockfd, const struct sockaddr_in& addr)
 {
 	int ret = ::bind(sockfd, sockaddr_cast(&addr), sizeof addr);
-	if (sockfd < 0)
+	if (ret < 0)
 	{
-		std::cerr << "sockets::bindOrDie" << std::endl;
-		abort();
+		LOGE("sockets::bindOrDie");
 	}
 }
 //1.将文件描述符转为被动态
@@ -73,10 +72,9 @@ void sockets::bindOrDie(int sockfd, const struct sockaddr_in& addr)
 void sockets::listenOrDie(int sockfd)
 {
 	int ret = ::listen(sockfd, SOMAXCONN);
-	if (sockfd < 0)
+	if (ret < 0)
 	{
-		std::cerr << "sockets::listenOrDie" << std::endl;
-		abort();
+		LOGE(" sockets::listenOrDie ");
 	}
 }
 
@@ -88,8 +86,7 @@ int sockets::accept(int sockfd, struct sockaddr_in* addr)
         &addrlen, SOCK_NONBLOCK | SOCK_CLOEXEC);
     if (connfd < 0)
     {
-		std::cerr << "Socket::accept " << errno <<std::endl;
-		abort();
+		LOGE(" Socket::accept ");
     }
     return connfd;
 }
@@ -98,8 +95,7 @@ void sockets::close(int sockfd)
 {
 	if (::close(sockfd) < 0)
 	{
-		std::cerr << "sockets::close " <<  std::endl;
-		abort();
+		LOGE(" sockets::close ");
 	}
 }
 
@@ -107,8 +103,7 @@ void sockets::shutdownWrite(int sockfd)
 {
 	if (::shutdown(sockfd, SHUT_WR) < 0)
 	{
-		std::cerr << "sockets::shutdown Write " << std::endl;
-		abort();
+		LOGE(" sockets::shutdown Write ");
 	}
 }
 
@@ -128,8 +123,7 @@ void sockets::fromHostPort(const char* ip, uint16_t port, struct sockaddr_in* ad
 	addr->sin_port = hostToNetwork16(port);
 	if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0)
 	{
-		std::cerr << "sockets::fromHostPort " << std::endl;
-		abort();
+		LOGE(" sockets::fromHostPort ");
 	}
 }
 //获得sockfd套接字捆绑的本地协议地址
@@ -140,8 +134,7 @@ struct sockaddr_in sockets::getLocalAddr(int sockfd)
 	socklen_t addrlen = sizeof(localaddr);
 	if (::getsockname(sockfd, sockaddr_cast(&localaddr), &addrlen) < 0)
 	{
-		std::cerr  << "sockets::getLocalAddr";
-		abort();
+		LOGE(" sockets::getLocalAddr ");
 	}
 	return localaddr;
 }
@@ -153,8 +146,7 @@ struct sockaddr_in sockets::getPeerAddr(int sockfd)
 	socklen_t addrlen = sizeof(peeraddr);
 	if (::getpeername(sockfd, sockaddr_cast(&peeraddr), &addrlen) < 0)
 	{
-		std::cerr << "sockets::getPeerAddr";
-		abort();
+		LOGE(" sockets::getPeerAddr ");
 	}
 	return peeraddr;
 }

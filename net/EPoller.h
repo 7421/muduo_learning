@@ -40,6 +40,15 @@ private:
 	void fillActiveChannels(int numEvents, ChannelList* activeChannels) const;
 
 	void update(int operation, Channel* channel);
+	/*
+		struct epoll_event
+		{
+		uint32_t     events;       需要检测的 fd 事件，取值与 poll 函数一样 
+		epoll_data_t data;         用户自定义数据 
+		};
+	*/
+
+
 
 	typedef std::vector<struct epoll_event> EventList;
 	typedef std::map<int, Channel*> ChannelMap;

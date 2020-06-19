@@ -1,5 +1,6 @@
-#include <iostream>
 #include <thread>
+
+#include "../base/AsyncLog.h"
 
 #include "EventLoop.h"
 #include "Channel.h"
@@ -12,6 +13,7 @@
 #include <signal.h>
 #include <sys/eventfd.h>
 #include <unistd.h>
+#include <sstream>
 
 using namespace muduo;
 //__thread 线程局部变量，线程间各不干扰
@@ -27,8 +29,7 @@ static int createEventfd()
 	int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
 	if (evtfd < 0)
 	{
-		std::cerr << "Failed in eventfd" << std::endl;
-		abort();
+		LOGE(" Failed in eventfd ");
 	}
 	return evtfd;
 }
@@ -55,15 +56,16 @@ EventLoop::EventLoop()
 	  wakeupFd_(createEventfd()),				//创建用于wakeup的事件描述符
 	  wakeupChannel_(new Channel(this, wakeupFd_)) //创建channel，根据发生的事件调用不同的函数
 {
-	std::cout << "EventLoop created " << this << "in thread " << threadId_ 
-		<< std::endl;
+	std::ostringstream osThreadID;
+	osThreadID << std::this_thread::get_id();
+	LOGI("EventLoop created %p in thread % s",this, osThreadID.str().c_str());
+	osThreadID.clear();
 	if (t_loopInThisThread)
 	{
 		//同一个线程出现了两个EventLoop
-		std::cerr << "Another EventLoop " << t_loopInThisThread
-			<< " exists in this thread " << threadId_
-			<< std::endl;
-		abort();
+		osThreadID << "Another EventLoop " << t_loopInThisThread
+			<< " exists in this thread " << threadId_;
+		LOGE(" %s ", osThreadID.str().c_str());
 	}
 	else
 		t_loopInThisThread = this;
@@ -94,7 +96,7 @@ void EventLoop::loop()
 			(*it)->handleEvent(pollReturnTime_);   //对每个发生事件的channel根据发生的事件调用回调函数
 		doPendingFunctors();
 	}
-	std::cout << "EventLoop " << this << " stop looping" << std::endl;
+	LOGI("EventLoop %p stop looping ", this);
 	looping_ = false;
 }
 
@@ -165,10 +167,11 @@ void EventLoop::removeChannel(Channel* channel)
 //发生跨线程调用，打印错误信息，abort()异常退出
 void EventLoop::abortNotInLoopThread()
 {
-	std::cerr << "EventLoop::abortNotInLoopThread - EventLoop " << this
+	std::ostringstream os;
+	os << "EventLoop::abortNotInLoopThread - EventLoop " << this
 		<< " was created in threadId_ " << threadId_
 		<< ", current thread id = " << std::this_thread::get_id();
-	abort();
+	LOGE(" %s ", os.str().c_str());
 }
 
 void  EventLoop::wakeup()
@@ -178,7 +181,7 @@ void  EventLoop::wakeup()
 	ssize_t n = ::write(wakeupFd_, &one, sizeof one);
 	if (n != sizeof one)
 	{
-		std::cerr << "EventLoop::wakeup() writes " << n << " bytes instead of 8" << std::endl;
+		LOGE("EventLoop::wakeup() writes %d instead of 8", n);
 		abort(); //程序异常退出程序，向自己发送SIGABRT信号
 	}
 }
@@ -189,7 +192,7 @@ void EventLoop::handleRead()
 	ssize_t n = ::read(wakeupFd_, &one, sizeof one);
 	if (n != sizeof one)
 	{
-		std::cerr << "EventLoop::handleRead() reads " << n << " bytes instead of 8" << std::endl;
+		LOGE("EventLoop::wakeup() writes %d instead of 8", n);
 		abort(); //程序异常退出程序，向自己发送SIGABRT信号
 	}
 }

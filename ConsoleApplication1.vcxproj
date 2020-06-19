@@ -76,6 +76,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" />
   <ItemGroup>
+    <ClCompile Include="base\AsyncLog.cpp" />
     <ClCompile Include="base\Timestamp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="net\Acceptor.cpp" />
@@ -87,7 +88,6 @@
     <ClCompile Include="net\EventLoopThread.cpp" />
     <ClCompile Include="net\EventLoopThreadPool.cpp" />
     <ClCompile Include="net\InetAddress.cpp" />
-    <ClCompile Include="net\Poller.cpp" />
     <ClCompile Include="net\SocektsOps.cpp" />
     <ClCompile Include="net\Socket.cpp" />
     <ClCompile Include="net\TcpClient.cpp" />
@@ -98,6 +98,7 @@
     <ClCompile Include="net\TimerQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="base\AsyncLog.h" />
     <ClInclude Include="base\Timestamp.h" />
     <ClInclude Include="net\Acceptor.h" />
     <ClInclude Include="net\Buffer.h" />
@@ -109,7 +110,6 @@
     <ClInclude Include="net\EventLoopThread.h" />
     <ClInclude Include="net\EventLoopThreadPool.h" />
     <ClInclude Include="net\InetAddress.h" />
-    <ClInclude Include="net\Poller.h" />
     <ClInclude Include="net\Socket.h" />
     <ClInclude Include="net\SocketsOps.h" />
     <ClInclude Include="net\TcpClient.h" />
@@ -117,6 +117,11 @@
     <ClInclude Include="net\TcpServer.h" />
     <ClInclude Include="net\Timer.h" />
     <ClInclude Include="net\TimerQueue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\x64\Debug\HTMLPage.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>

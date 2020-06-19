@@ -1,8 +1,9 @@
 #include "Channel.h"
 #include "EventLoop.h"
-#include "../base/Timestamp.h"
 
-#include <iostream>
+#include "../base/Timestamp.h"
+#include "../base/AsyncLog.h"
+
 #include <poll.h>
 #include <assert.h>
 
@@ -42,11 +43,11 @@ void Channel::handleEvent(Timestamp receiveTime)
     //描述符没用引用一个打开的文件
     if (revents_ & POLLNVAL)
     {
-        std::cout << "Channel::handle_event() POLLNVAL" << std::endl;
+       LOGI(" Channel::handle_event() POLLNVAL "); 
     }
     //出现挂起事件
     if ((revents_ & POLLHUP) && !(revents_ & POLLIN)) {
-        std::cout << "Channel::handle_event() POLLHUP";
+        LOGI( "Channel::handle_event() POLLHUP");
         if (closeCallback_) closeCallback_();
     }
     //发生错误事件，调用错误回调函数

@@ -1,6 +1,5 @@
 #include "Acceptor.h"
 
-#include <iostream>
 #include <functional>
 
 #include "EventLoop.h"

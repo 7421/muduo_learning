@@ -1,8 +1,8 @@
 #include "TcpConnection.h"
 
-#include <iostream>
 #include <functional>
 #include <memory>
+#include <sstream>
 
 #include <unistd.h>
 #include <assert.h>
@@ -13,6 +13,7 @@
 #include "Socket.h"
 #include "SocketsOps.h"
 
+#include "../base/AsyncLog.h"
 using namespace muduo;
 
 TcpConnection::TcpConnection(EventLoop* loop,
@@ -28,8 +29,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
 	  localAddr_(localAddr),	//本地协议地址
 	  peerAddr_(peerAddr)		//客户端协议地址
 {
-	std::cout << "TcpConnection::ctor[" << name_ << "] at " << this
-		<< "fd = " << sockfd << std::endl;
+	LOGI("TcpConnection::ctor[ %s ] at %p fd = %d",name_.c_str(),this,sockfd);
 	channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this,std::placeholders::_1));
 	channel_->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
 	channel_->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
@@ -38,8 +38,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
 
 TcpConnection:: ~TcpConnection()
 {
-	std::cout << "TcpConnection::dtor[" << name_ << "] at " << this
-		<< " fd=" << channel_->fd() << std::endl;
+	LOGI("TcpConnection::dtor[ %s ] at %p fd = %d", name_.c_str(), this, channel_->fd());
 }
 
 void TcpConnection::send(const std::string& message)
@@ -71,7 +70,7 @@ void TcpConnection::sendInLoop(const std::string& message)
 		if (nwrote >= 0)
 		{
 			if (static_cast<size_t>(nwrote) < message.size())
-				std::cout << "I am going to write more data" << std::endl;
+				LOGI(" I am going to write more data");
 			else if (writeCompleteCallback_) {
 				loop_->queueInLoop(
 					std::bind(writeCompleteCallback_, shared_from_this()));
@@ -81,8 +80,7 @@ void TcpConnection::sendInLoop(const std::string& message)
 		{
 			nwrote = 0;
 			if (errno != EWOULDBLOCK) {
-				std::cerr << "TcpConnection::sendInLoop";
-				abort();
+				LOGE(" TcpConnection::sendInLoop ");
 			}
 		}
 	}
@@ -154,7 +152,7 @@ void TcpConnection::handleRead(Timestamp receiveTime)
 	else
 	{
 		errno = savedErrno;
-		std::cerr << "TcpConnection::handleRead" << std::endl;
+		LOGE(" TcpConnection::handleRead ");
 		handleError();
 	}
 		
@@ -177,27 +175,26 @@ void TcpConnection::handleWrite()
 				if (writeCompleteCallback_) {
 					loop_->queueInLoop(
 						std::bind(writeCompleteCallback_, shared_from_this()));
-				}	
+				}
 				if (state_ == kDisconnecting)
-				shutdownInLoop();
+					shutdownInLoop();
 			}
 			else
-				std::cout << " I am going to write more data\n";
+				LOGI(" I am going to write more data");
 		}
 		else
 		{
-			std::cerr << "TcpConnection::handleWrite\n";
-			abort();
+			LOGE(" TcpConnection::handleWrite ");
 		}
 	}
 	else
-		std::cout << "Connection is down, no more writing\n";
+		LOGI(" Connection is down, no more writing ");
 }
 
 void TcpConnection::handleClose()
 {
 	loop_->assertInLoopThread();
-	std::cout << "TcpConnection::handleClose state = " << state_ << std::endl;
+	LOGI(" TcpConnection::handleClose state = ");
 	assert(state_ == kConnected || state_ == kDisconnecting);
 	// we don't close fd, leave it to dtor, so we can find leaks easily.
 	channel_->disableAll();
@@ -209,8 +206,9 @@ __thread char t_errnobuf[512];
 void TcpConnection::handleError()
 {
 	int err = sockets::getSocketError(channel_->fd());
-	std::cerr << "TcpConnection::handleError [" << name_
+	std::ostringstream os;
+	os <<  "TcpConnection::handleError [" << name_
 		<< "] - SO_ERROR = " << err <<  " " << strerror(err)<< std::endl;
-	abort();
+	LOGE(" %s ", os.str().c_str());
 }
 

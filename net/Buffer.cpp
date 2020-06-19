@@ -1,7 +1,5 @@
 #include "Buffer.h"
 
-#include<iostream>
-
 #include <errno.h>
 #include <memory.h>
 #include <sys/uio.h>
